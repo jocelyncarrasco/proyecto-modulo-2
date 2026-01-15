@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Banco Java - Menú Principal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+  <style>
+    :root {
+      --primary-blue: #0a25f1;
+      --light-blue: #3a4cf3;
+      --dark-blue: #081fc7;
+      --success-green: #28a745;
+      --warning-yellow: #ffc107;
+      --danger-red: #dc3545;
+      --info-cyan: #17a2b8;
+    }
+    
+    body {
+      background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+      min-height: 100vh;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      padding-top: 20px;
+      padding-bottom: 40px;
+    }
+    
+    .navbar-bancojava {
+      background: var(--primary-blue);
+      box-shadow: 0 4px 12px rgba(10, 37, 241, 0.15);
+      padding: 12px 0;
+      margin-bottom: 30px;
+    }
+    
+    .navbar-brand {
+      color: white !important;
+      font-weight: 700;
+      font-size: 1.5rem;
+      letter-spacing: 0.5px;
+    }
+    
+    .nav-user {
+      color: rgba(255, 255, 255, 0.9);
+      font-weight: 500;
+      padding: 8px 0;
+    }
+    
+    .main-container {
+      max-width: 800px;
+      margin: 0 auto;
+      animation: fadeIn 0.8s ease;
+    }
+    
+    .welcome-card {
+      background: var(--primary-blue);
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(10, 37, 241, 0.2);
+      padding: 30px;
+      margin-bottom: 30px;
+      color: white;
+      text-align: center;
+    }
+    
+    .welcome-card h1 {
+      font-weight: 700;
+      margin-bottom: 10px;
+      font-size: 2.2rem;
+    }
+    
+    .welcome-card p {
+      opacity: 0.9;
+      margin-bottom: 0;
+      font-size: 1.1rem;
+    }
+    
+    .balance-card {
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+      padding: 30px;
+      margin-bottom: 30px;
+      border-top: 5px solid var(--primary-blue);
+      text-align: center;
+      transition: transform 0.3s;
+    }
+    
+    .balance-card:hover {
+      transform: translateY(-5px);
+    }
+    
+    .balance-label {
+      color: #666;
+      font-weight: 600;
+      margin-bottom: 15px;
+      font-size: 1.1rem;
+      letter-spacing: 0.5px;
+    }
+    
+    .balance-amount {
+      color: var(--success-green);
+      font-size: 3rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      letter-spacing: 1px;
+    }
+    
+    .balance-update {
+      color: #888;
+      font-size: 0.9rem;
+    }
+    
+    .transaction-card {
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+      padding: 25px;
+      margin-bottom: 30px;
+    }
+    
+    .transaction-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .transaction-header h3 {
+      color: #333;
+      font-weight: 700;
+      margin: 0;
+      font-size: 1.3rem;
+    }
+    
+    .transaction-item {
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 15px;
+      border-left: 4px solid transparent;
+      background: #f9f9f9;
+      transition: all 0.3s;
+    }
+    
+    .transaction-item:hover {
+      background: #f0f0f0;
+      transform: translateX(5px);
+    }
+    
+    .transaction-positive {
+      border-left-color: var(--success-green);
+    }
+    
+    .transaction-negative {
+      border-left-color: var(--danger-red);
+    }
+    
+    .transaction-details {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .transaction-info h5 {
+      color: #333;
+      font-weight: 600;
+      margin-bottom: 5px;
+      font-size: 1.1rem;
+    }
+    
+    .transaction-info p {
+      color: #666;
+      margin: 0;
+      font-size: 0.9rem;
+    }
+    
+    .transaction-amount {
+      font-weight: 700;
+      font-size: 1.2rem;
+    }
+    
+    .transaction-positive .transaction-amount {
+      color: var(--success-green);
+    }
+    
+    .transaction-negative .transaction-amount {
+      color: var(--danger-red);
+    }
+    
+    .no-transactions {
+      text-align: center;
+      color: #888;
+      padding: 30px;
+      font-style: italic;
+    }
+    
+    .action-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 25px;
+      margin-bottom: 40px;
+    }
+    
+    .action-card {
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+      padding: 30px;
+      text-align: center;
+      transition: all 0.3s;
+      border-top: 5px solid transparent;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    
+    .action-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+    }
+    
+    .action-icon {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+      display: block;
+    }
+    
+    .action-title {
+      color: #333;
+      font-weight: 700;
+      margin-bottom: 15px;
+      font-size: 1.3rem;
+    }
+    
+    .action-description {
+      color: #666;
+      margin-bottom: 25px;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+    
+    .btn-action {
+      border-radius: 10px;
+      padding: 12px 25px;
+      font-weight: 600;
+      font-size: 1rem;
+      transition: all 0.3s;
+      border: none;
+      width: 100%;
+    }
+    
+    .btn-deposit {
+      background: var(--info-cyan);
+      color: white;
+      border-top-color: var(--info-cyan);
+    }
+    
+    .btn-deposit:hover {
+      background: #138496;
+      color: white;
+    }
+    
+    .btn-send {
+      background: var(--warning-yellow);
+      color: #212529;
+      border-top-color: var(--warning-yellow);
+    }
+    
+    .btn-send:hover {
+      background: #e0a800;
+      color: #212529;
+    }
+    
+    .btn-transactions {
+      background: #6f42c1;
+      color: white;
+      border-top-color: #6f42c1;
+    }
+    
+    .btn-transactions:hover {
+      background: #5a2d9c;
+      color: white;
+    }
+    
+    .btn-logout {
+      background: var(--danger-red);
+      color: white;
+      border-top-color: var(--danger-red);
+    }
+    
+    .btn-logout:hover {
+      background: #bd2130;
+      color: white;
+    }
+    
+    .footer {
+      text-align: center;
+      padding: 30px 0;
+      color: #666;
+      font-size: 0.9rem;
+      border-top: 1px solid #eee;
+      margin-top: 30px;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(-20px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .main-container {
+        padding: 0 15px;
+      }
+      
+      .welcome-card {
+        padding: 20px;
+      }
+      
+      .welcome-card h1 {
+        font-size: 1.8rem;
+      }
+      
+      .balance-card {
+        padding: 20px;
+      }
+      
+      .balance-amount {
+        font-size: 2.5rem;
+      }
+      
+      .action-cards {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+      
+      .transaction-card {
+        padding: 20px;
+      }
+      
+      .transaction-details {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+      .transaction-amount {
+        margin-top: 10px;
+      }
+    }
+    
+    @media (max-width: 576px) {
+      .navbar-brand {
+        font-size: 1.3rem;
+      }
+      
+      .balance-amount {
+        font-size: 2rem;
+      }
+      
+      .transaction-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+      .transaction-header h3 {
+        margin-bottom: 10px;
+      }
+    }
+    
+    @media (min-width: 769px) and (max-width: 992px) {
+      .action-cards {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Barra de navegación -->
+  <nav class="navbar navbar-expand-lg navbar-bancojava">
+    <div class="container">
+      <a class="navbar-brand" href="#">🏦 Banco Java</a>
+      <div class="nav-user" id="currentUser">Bienvenido, Usuario</div>
+    </div>
+  </nav>
+  
+  <!-- Contenido principal -->
+  <div class="container main-container">
+    <!-- Tarjeta de bienvenida -->
+    <div class="welcome-card">
+      <h1 id="welcomeMessage">Bienvenido al Banco Java</h1>
+      <p>Gestiona tus finanzas de manera segura y sencilla</p>
+    </div>
+    
+    <!-- Tarjeta de saldo -->
+    <div class="balance-card">
+      <div class="balance-label">Saldo disponible</div>
+      <div class="balance-amount">$<span id="balanceAmount">0.00</span></div>
+      <div class="balance-update">Actualizado al <span id="lastUpdate"></span></div>
+    </div>
+    
+    <!-- Últimas transacciones -->
+    <div class="transaction-card">
+      <div class="transaction-header">
+        <h3>📊 Últimas transacciones</h3>
+        <a href="transactions.html" class="btn btn-sm btn-outline-primary">Ver todas</a>
+      </div>
+      
+      <div id="transactionsList">
+        <!-- Las transacciones se cargarán aquí dinámicamente -->
+      </div>
+      
+      <div id="noTransactions" class="no-transactions" style="display: none;">
+        No hay transacciones recientes
+      </div>
+    </div>
+    
+    <!-- Tarjetas de acciones -->
+    <div class="action-cards">
+      <!-- Depósito -->
+      <div class="action-card">
+        <div>
+          <div class="action-icon">💰</div>
+          <div class="action-title">Depositar</div>
+          <div class="action-description">Agrega fondos a tu cuenta de manera rápida y segura</div>
+        </div>
+        <a href="deposit.html" class="btn btn-action btn-deposit">Realizar depósito</a>
+      </div>
+      
+      <!-- Enviar dinero -->
+      <div class="action-card">
+        <div>
+          <div class="action-icon">📤</div>
+          <div class="action-title">Enviar dinero</div>
+          <div class="action-description">Transfiere dinero a otros usuarios o cuentas bancarias</div>
+        </div>
+        <a href="sendmoney.html" class="btn btn-action btn-send">Enviar dinero</a>
+      </div>
+      
+      <!-- Historial -->
+      <div class="action-card">
+        <div>
+          <div class="action-icon">📋</div>
+          <div class="action-title">Historial</div>
+          <div class="action-description">Revisa todas tus transacciones y movimientos recientes</div>
+        </div>
+        <a href="transactions.html" class="btn btn-action btn-transactions">Ver historial</a>
+      </div>
+      
+      <!-- Cerrar sesión -->
+      <div class="action-card">
+        <div>
+          <div class="action-icon">🚪</div>
+          <div class="action-title">Cerrar sesión</div>
+          <div class="action-description">Sal de tu cuenta de manera segura</div>
+        </div>
+        <button id="logoutBtn" class="btn btn-action btn-logout">Cerrar sesión</button>
+      </div>
+    </div>
+    
+    <!-- Pie de página -->
+    <div class="footer">
+      <p>Banco Java © <span id="currentYear"></span> - Tu banco digital confiable</p>
+      <p class="small">Número de transacciones este mes: <span id="monthTransactions">0</span></p>
+    </div>
+  </div>
+
+  <!-- jQuery y Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <script>
+    $(document).ready(function() {
+      // Referencias a elementos
+      const $balanceAmount = $('#balanceAmount');
+      const $lastUpdate = $('#lastUpdate');
+      const $transactionsList = $('#transactionsList');
+      const $noTransactions = $('#noTransactions');
+      const $welcomeMessage = $('#welcomeMessage');
+      const $currentUser = $('#currentUser');
+      const $logoutBtn = $('#logoutBtn');
+      const $monthTransactions = $('#monthTransactions');
+      const $currentYear = $('#currentYear');
+      
+      // Formatear número como moneda
+      function formatCurrency(amount) {
+        return parseFloat(amount).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+      }
+      
+      // Formatear fecha
+      function formatDate(dateString) {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('es-ES', {
+          day: '2-digit',
+          month: 'short',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+      }
+      
+      // Obtener saldo actual
+      function getCurrentBalance() {
+        const savedBalance = localStorage.getItem('walletBalance');
+        
+        if (savedBalance === null || savedBalance === undefined) {
+          localStorage.setItem('walletBalance', '100000.00');
+          return 100000.00;
+        }
+        
+        const balance = parseFloat(savedBalance);
+        
+        if (isNaN(balance)) {
+          localStorage.setItem('walletBalance', '100000.00');
+          return 100000.00;
+        }
+        
+        return balance;
+      }
+      
+      // Obtener transacciones
+      function getTransactions() {
+        return JSON.parse(localStorage.getItem('walletTransactions') || '[]');
+      }
+      
+      // Obtener transacciones del mes actual
+      function getCurrentMonthTransactions() {
+        const transactions = getTransactions();
+        const currentMonth = new Date().getMonth();
+        const currentYear = new Date().getFullYear();
+        
+        return transactions.filter(transaction => {
+          const transDate = new Date(transaction.date);
+          return transDate.getMonth() === currentMonth && transDate.getFullYear() === currentYear;
+        });
+      }
+      
+      // Actualizar visualización del saldo
+      function updateBalanceDisplay() {
+        const balance = getCurrentBalance();
+        $balanceAmount.text(formatCurrency(balance));
+        
+        // Actualizar fecha de última actualización
+        const now = new Date();
+        $lastUpdate.text(now.toLocaleDateString('es-ES', {
+          day: '2-digit',
+          month: 'long',
+          year: 'numeric'
+        }));
+      }
+      
+      // Mostrar transacciones recientes (máximo 3)
+      function showRecentTransactions() {
+        const transactions = getTransactions();
+        const recentTransactions = transactions.slice(-3).reverse(); // Últimas 3, más reciente primero
+        
+        // Limpiar lista
+        $transactionsList.empty();
+        
+        if (recentTransactions.length === 0) {
+          $noTransactions.show();
+          return;
+        }
+        
+        $noTransactions.hide();
+        
+        // Crear elementos para cada transacción
+        recentTransactions.forEach((transaction, index) => {
+          const transactionClass = transaction.type === 'deposit' ? 'transaction-positive' : 'transaction-negative';
+          const transactionIcon = transaction.type === 'deposit' ? '💰' : '📤';
+          const transactionSign = transaction.type === 'deposit' ? '+' : '-';
+          
+          const $transactionItem = $(`
+            <div class="transaction-item ${transactionClass}" style="animation: slideIn 0.5s ease ${index * 0.1}s both">
+              <div class="transaction-details">
+                <div class="transaction-info">
+                  <h5>${transactionIcon} ${transaction.type === 'deposit' ? 'Depósito' : 'Transferencia'}</h5>
+                  <p>${formatDate(transaction.date)}</p>
+                  ${transaction.type === 'send' ? `<p>Para: ${transaction.contactName || 'Contacto'}</p>` : ''}
+                </div>
+                <div class="transaction-amount">${transactionSign}$${formatCurrency(transaction.amount)}</div>
+              </div>
+            </div>
+          `);
+          
+          $transactionsList.append($transactionItem);
+        });
+      }
+      
+      // Personalizar mensaje de bienvenida según la hora
+      function setWelcomeMessage() {
+        const hour = new Date().getHours();
+        let greeting;
+        
+        if (hour < 12) {
+          greeting = "Buenos días";
+        } else if (hour < 18) {
+          greeting = "Buenas tardes";
+        } else {
+          greeting = "Buenas noches";
+        }
+        
+        $welcomeMessage.text(`${greeting}, bienvenido al Banco Java`);
+        
+        // Obtener email del usuario desde localStorage o usar uno por defecto
+        const userEmail = localStorage.getItem('userEmail') || 'usuario@correo.com';
+        const userName = userEmail.split('@')[0];
+        $currentUser.text(`Bienvenido, ${userName.charAt(0).toUpperCase() + userName.slice(1)}`);
+      }
+      
+      // Configurar año actual
+      function setCurrentYear() {
+        $currentYear.text(new Date().getFullYear());
+      }
+      
+      // Actualizar contador de transacciones del mes
+      function updateMonthTransactionCount() {
+        const monthTransactions = getCurrentMonthTransactions();
+        $monthTransactions.text(monthTransactions.length);
+      }
+      
+      // Manejar cierre de sesión
+      function setupLogout() {
+        $logoutBtn.on('click', function(e) {
+          e.preventDefault();
+          
+          // Mostrar confirmación
+          if (confirm('¿Estás seguro de que quieres cerrar sesión?')) {
+            // Animación de despedida
+            $logoutBtn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Cerrando sesión...');
+            
+            // Redirigir después de 1.5 segundos
+            setTimeout(() => {
+              window.location.href = "login.html";
+            }, 1500);
+          }
+        });
+      }
+      
+      // Inicializar tooltips de Bootstrap
+      function initTooltips() {
+        $('[data-toggle="tooltip"]').tooltip();
+      }
+      
+      // Actualizar datos en tiempo real
+      function refreshData() {
+        updateBalanceDisplay();
+        showRecentTransactions();
+        updateMonthTransactionCount();
+      }
+      
+      // Inicializar la página
+      function initPage() {
+        setWelcomeMessage();
+        updateBalanceDisplay();
+        showRecentTransactions();
+        setCurrentYear();
+        updateMonthTransactionCount();
+        setupLogout();
+        initTooltips();
+        
+        // Simular actualización en tiempo real (cada 30 segundos)
+        setInterval(refreshData, 30000);
+        
+        // Efecto de animación al cargar
+        setTimeout(() => {
+          $('.main-container').css({
+            'opacity': '1',
+            'transform': 'translateY(0)'
+          });
+        }, 100);
+      }
+      
+      // Iniciar
+      initPage();
+      
+      // Recargar datos al enfocar la ventana
+      $(window).on('focus', refreshData);
+    });
+  </script>
+</body>
+</html>

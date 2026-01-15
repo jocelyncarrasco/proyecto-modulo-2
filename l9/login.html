@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Banco Java - Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+  <style>
+    :root {
+      --primary-blue: #0a25f1;
+      --light-blue: #3a4cf3;
+      --dark-blue: #081fc7;
+      --success-green: #28a745;
+      --error-red: #dc3545;
+    }
+    
+    body {
+      background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 20px;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    .login-container {
+      max-width: 450px;
+      width: 100%;
+      margin: 0 auto;
+      animation: fadeIn 0.8s ease;
+    }
+    
+    .login-card {
+      background: var(--primary-blue);
+      border-radius: 15px;
+      box-shadow: 0 15px 35px rgba(10, 37, 241, 0.25);
+      overflow: hidden;
+      border: none;
+    }
+    
+    .login-header {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 35px 20px;
+      text-align: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .login-header h2 {
+      color: white;
+      font-weight: 700;
+      margin: 0;
+      font-size: 2rem;
+      letter-spacing: 0.5px;
+    }
+    
+    .login-body {
+      padding: 35px 30px;
+    }
+    
+    .form-group label {
+      color: white;
+      font-weight: 600;
+      margin-bottom: 10px;
+      font-size: 1rem;
+      display: block;
+      position: relative;
+      padding-left: 25px;
+    }
+    
+    .form-group label:before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 2px;
+      width: 18px;
+      height: 18px;
+      background-color: white;
+      border-radius: 3px;
+    }
+    
+    .form-group label[for="email"]:after {
+      content: "✉";
+      position: absolute;
+      left: 4px;
+      top: 0;
+      font-size: 12px;
+      color: var(--primary-blue);
+      font-weight: bold;
+    }
+    
+    .form-group label[for="password"]:after {
+      content: "🔒";
+      position: absolute;
+      left: 3px;
+      top: -1px;
+      font-size: 12px;
+      color: var(--primary-blue);
+    }
+    
+    .form-control {
+      border-radius: 10px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      padding: 14px 20px;
+      background: rgba(255, 255, 255, 0.95);
+      transition: all 0.3s;
+      font-size: 1rem;
+      height: auto;
+    }
+    
+    .form-control:focus {
+      background: white;
+      border-color: white;
+      box-shadow: 0 0 0 0.3rem rgba(255, 255, 255, 0.25);
+    }
+    
+    .form-control::placeholder {
+      color: #888;
+      opacity: 0.8;
+    }
+    
+    .input-group {
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    
+    .input-group-text {
+      background: rgba(255, 255, 255, 0.95);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-left: none;
+      color: #666;
+      font-weight: bold;
+      padding: 0 15px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .input-group-text:hover {
+      background: white;
+      color: var(--primary-blue);
+    }
+    
+    .password-toggle {
+      font-size: 1.1rem;
+      user-select: none;
+    }
+    
+    .btn-login {
+      background: white;
+      color: var(--primary-blue);
+      border: none;
+      border-radius: 10px;
+      padding: 16px;
+      font-weight: 700;
+      font-size: 1.2rem;
+      transition: all 0.3s;
+      margin-top: 30px;
+      letter-spacing: 0.5px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .btn-login:hover {
+      background: #f0f0f0;
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+    
+    .btn-login:active {
+      transform: translateY(-1px);
+    }
+    
+    .btn-login:disabled {
+      opacity: 0.7;
+      transform: none;
+      box-shadow: none;
+    }
+    
+    .alert {
+      border-radius: 10px;
+      border: none;
+      padding: 18px 20px;
+      margin-top: 20px;
+      display: none;
+      font-weight: 500;
+    }
+    
+    .alert-success {
+      background: var(--success-green);
+      color: white;
+    }
+    
+    .alert-danger {
+      background: var(--error-red);
+      color: white;
+    }
+    
+    .alert-icon {
+      display: inline-block;
+      width: 24px;
+      height: 24px;
+      line-height: 24px;
+      text-align: center;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.3);
+      margin-right: 12px;
+      font-weight: bold;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+      20%, 40%, 60%, 80% { transform: translateX(5px); }
+    }
+    
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+    
+    .shake {
+      animation: shake 0.5s;
+    }
+    
+    .pulse {
+      animation: pulse 0.5s;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 576px) {
+      body {
+        padding: 15px;
+      }
+      
+      .login-container {
+        max-width: 100%;
+      }
+      
+      .login-header {
+        padding: 25px 15px;
+      }
+      
+      .login-header h2 {
+        font-size: 1.7rem;
+      }
+      
+      .login-body {
+        padding: 25px 20px;
+      }
+      
+      .form-control {
+        padding: 12px 15px;
+      }
+      
+      .btn-login {
+        padding: 14px;
+        font-size: 1.1rem;
+        margin-top: 25px;
+      }
+    }
+    
+    @media (min-width: 577px) and (max-width: 768px) {
+      .login-container {
+        max-width: 420px;
+      }
+      
+      .login-body {
+        padding: 30px 25px;
+      }
+    }
+    
+    @media (min-width: 992px) {
+      .login-container {
+        max-width: 480px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <div class="login-card">
+      <div class="login-header">
+        <h2>Banco Java</h2>
+      </div>
+      
+      <div class="login-body">
+        <!-- Alertas -->
+        <div id="successAlert" class="alert alert-success" role="alert">
+          <span class="alert-icon">✓</span>
+          <span>¡Credenciales correctas! Redirigiendo al menú principal...</span>
+        </div>
+        
+        <div id="errorAlert" class="alert alert-danger" role="alert">
+          <span class="alert-icon">!</span>
+          <span id="errorMessage"></span>
+        </div>
+        
+        <!-- Formulario -->
+        <form id="loginForm">
+          <div class="form-group">
+            <label for="email">Correo electrónico</label>
+            <input type="email" class="form-control" id="email" 
+                   placeholder="usuario@correo.com" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="password">Contraseña</label>
+            <div class="input-group">
+              <input type="password" class="form-control" id="password" 
+                     placeholder="••••••" required>
+              <div class="input-group-append">
+                <span class="input-group-text password-toggle" id="togglePassword">
+                  <span id="eyeIcon">👁</span>
+                </span>
+              </div>
+            </div>
+          </div>
+          
+          <button type="submit" class="btn btn-login btn-block">
+            Iniciar sesión
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- jQuery y Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <script>
+    $(document).ready(function() {
+      // Credenciales válidas
+      const VALID_CREDENTIALS = {
+        email: "usuario@correo.com",
+        password: "123456"
+      };
+      
+      // Referencias a elementos
+      const $loginForm = $('#loginForm');
+      const $emailInput = $('#email');
+      const $passwordInput = $('#password');
+      const $successAlert = $('#successAlert');
+      const $errorAlert = $('#errorAlert');
+      const $errorMessage = $('#errorMessage');
+      const $togglePassword = $('#togglePassword');
+      const $eyeIcon = $('#eyeIcon');
+      const $btnLogin = $('.btn-login');
+      
+      // Estado de visibilidad de contraseña
+      let isPasswordVisible = false;
+      
+      // Mostrar/ocultar contraseña
+      $togglePassword.on('click', function() {
+        isPasswordVisible = !isPasswordVisible;
+        const type = isPasswordVisible ? 'text' : 'password';
+        $passwordInput.attr('type', type);
+        
+        // Cambiar ícono
+        if (isPasswordVisible) {
+          $eyeIcon.text('👁');
+          $togglePassword.addClass('pulse');
+          setTimeout(() => {
+            $togglePassword.removeClass('pulse');
+          }, 500);
+        } else {
+          $eyeIcon.text('👁');
+        }
+      });
+      
+      // Efecto hover en el botón de mostrar/ocultar
+      $togglePassword.hover(
+        function() {
+          $(this).css('transform', 'scale(1.1)');
+        },
+        function() {
+          $(this).css('transform', 'scale(1)');
+        }
+      );
+      
+      // Mostrar error
+      function showError(message) {
+        $errorMessage.text(message);
+        $errorAlert.slideDown(300);
+        $successAlert.slideUp(300);
+        
+        // Agregar efecto shake al formulario
+        $loginForm.addClass('shake');
+        setTimeout(() => {
+          $loginForm.removeClass('shake');
+        }, 500);
+        
+        // Ocultar automáticamente después de 5 segundos
+        setTimeout(() => {
+          $errorAlert.slideUp(300);
+        }, 5000);
+      }
+      
+      // Mostrar éxito
+      function showSuccess() {
+        $successAlert.slideDown(300);
+        $errorAlert.slideUp(300);
+        
+        // Deshabilitar botón durante la redirección
+        $btnLogin.prop('disabled', true).html('Redirigiendo...');
+        
+        // Agregar efecto de animación al botón
+        $btnLogin.css({
+          'background': 'linear-gradient(90deg, #28a745, #20c997)',
+          'color': 'white'
+        });
+      }
+      
+      // Validar credenciales
+      function validateCredentials(email, password) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        
+        if (!emailRegex.test(email)) {
+          return {
+            isValid: false,
+            message: "Por favor, introduce un correo electrónico válido."
+          };
+        }
+        
+        if (password.length < 6) {
+          return {
+            isValid: false,
+            message: "La contraseña debe tener al menos 6 caracteres."
+          };
+        }
+        
+        if (email === VALID_CREDENTIALS.email && password === VALID_CREDENTIALS.password) {
+          return { isValid: true };
+        } else {
+          return {
+            isValid: false,
+            message: "Correo o contraseña incorrectos."
+          };
+        }
+      }
+      
+      // Redirigir al menú
+      function redirectToMenu() {
+        showSuccess();
+        
+        setTimeout(() => {
+          window.location.href = "menu.html";
+        }, 2000);
+      }
+      
+      // Manejar envío del formulario
+      $loginForm.on('submit', function(event) {
+        event.preventDefault();
+        
+        // Ocultar alertas
+        $successAlert.slideUp(200);
+        $errorAlert.slideUp(200);
+        
+        // Obtener valores
+        const email = $emailInput.val().trim();
+        const password = $passwordInput.val().trim();
+        
+        // Validar campos vacíos
+        if (!email || !password) {
+          showError("Por favor, completa todos los campos.");
+          return;
+        }
+        
+        // Validar credenciales
+        const validationResult = validateCredentials(email, password);
+        
+        if (validationResult.isValid) {
+          redirectToMenu();
+        } else {
+          showError(validationResult.message);
+        }
+      });
+      
+      // Limpiar errores al escribir
+      $emailInput.on('input', function() {
+        $errorAlert.slideUp(200);
+        $(this).removeClass('is-invalid');
+      });
+      
+      $passwordInput.on('input', function() {
+        $errorAlert.slideUp(200);
+        $(this).removeClass('is-invalid');
+      });
+      
+      // Validación en tiempo real para email
+      $emailInput.on('blur', function() {
+        const email = $(this).val().trim();
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        
+        if (email && !emailRegex.test(email)) {
+          $(this).addClass('is-invalid');
+          $errorMessage.text("Formato de email inválido.");
+          $errorAlert.slideDown(300);
+        } else {
+          $(this).removeClass('is-invalid');
+          $errorAlert.slideUp(300);
+        }
+      });
+      
+      // Validación en tiempo real para contraseña
+      $passwordInput.on('blur', function() {
+        const password = $(this).val().trim();
+        
+        if (password && password.length < 6) {
+          $(this).addClass('is-invalid');
+          $errorMessage.text("La contraseña debe tener al menos 6 caracteres.");
+          $errorAlert.slideDown(300);
+        } else {
+          $(this).removeClass('is-invalid');
+          $errorAlert.slideUp(300);
+        }
+      });
+      
+      // Prevenir envío con Enter en campos individuales
+      $('.form-control').on('keydown', function(e) {
+        if (e.key === 'Enter' && !$(this).is($passwordInput)) {
+          e.preventDefault();
+          if ($(this).is($emailInput)) {
+            $passwordInput.focus();
+          }
+        }
+      });
+      
+      // Ajustar altura del body en dispositivos móviles
+      function adjustBodyHeight() {
+        const windowHeight = $(window).height();
+        if ($(window).width() < 768) {
+          $('body').css('min-height', windowHeight + 'px');
+        }
+      }
+      
+      // Ejecutar al cargar y al redimensionar
+      adjustBodyHeight();
+      $(window).on('resize', adjustBodyHeight);
+      
+      // Efecto de carga inicial
+      setTimeout(() => {
+        $('.login-container').css({
+          'opacity': '1',
+          'transform': 'translateY(0)'
+        });
+      }, 100);
+      
+      // Foco automático en el campo de email
+      $emailInput.focus();
+    });
+  </script>
+</body>
+</html>

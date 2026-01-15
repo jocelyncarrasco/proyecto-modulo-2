@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Banco Java - Últimos Movimientos</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+  <style>
+    :root {
+      --primary-blue: #0a25f1;
+      --light-blue: #3a4cf3;
+      --dark-blue: #081fc7;
+      --success-green: #28a745;
+      --warning-yellow: #ffc107;
+      --danger-red: #dc3545;
+      --info-cyan: #17a2b8;
+      --purple: #6f42c1;
+    }
+    
+    body {
+      background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+      min-height: 100vh;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    .navbar-bancojava {
+      background: var(--primary-blue);
+      box-shadow: 0 4px 12px rgba(10, 37, 241, 0.15);
+      padding: 12px 0;
+    }
+    
+    .navbar-brand {
+      color: white !important;
+      font-weight: 700;
+      font-size: 1.5rem;
+      letter-spacing: 0.5px;
+    }
+    
+    .nav-back {
+      color: rgba(255, 255, 255, 0.9);
+      font-weight: 500;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      transition: all 0.3s;
+    }
+    
+    .nav-back:hover {
+      color: white;
+      text-decoration: none;
+    }
+    
+    .main-container {
+      max-width: 800px;
+      margin: 40px auto;
+      animation: fadeIn 0.8s ease;
+    }
+    
+    .page-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    
+    .page-title {
+      color: #333;
+      font-weight: 700;
+      margin-bottom: 10px;
+      font-size: 2.2rem;
+    }
+    
+    .page-subtitle {
+      color: #666;
+      font-size: 1.1rem;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    
+    /* Filtros y estadísticas */
+    .filters-card {
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+      padding: 25px;
+      margin-bottom: 30px;
+      border-top: 5px solid var(--purple);
+    }
+    
+    .filter-title {
+      color: #333;
+      font-weight: 600;
+      margin-bottom: 15px;
+      font-size: 1.2rem;
+    }
+    
+    .filter-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    
+    .filter-btn {
+      background: #f8f9fa;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 8px 15px;
+      font-weight: 500;
+      color: #666;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .filter-btn:hover {
+      background: #e9ecef;
+      border-color: #ccc;
+    }
+    
+    .filter-btn.active {
+      background: var(--primary-blue);
+      color: white;
+      border-color: var(--primary-blue);
+    }
+    
+    .stats-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-top: 20px;
+    }
+    
+    .stat-card {
+      background: #f8f9fa;
+      border-radius: 10px;
+      padding: 15px;
+      text-align: center;
+      border-left: 4px solid transparent;
+    }
+    
+    .stat-card.deposits {
+      border-left-color: var(--success-green);
+    }
+    
+    .stat-card.transfers {
+      border-left-color: var(--danger-red);
+    }
+    
+    .stat-card.total {
+      border-left-color: var(--primary-blue);
+    }
+    
+    .stat-label {
+      color: #666;
+      font-weight: 500;
+      font-size: 0.9rem;
+      margin-bottom: 5px;
+    }
+    
+    .stat-value {
+      color: #333;
+      font-weight: 700;
+      font-size: 1.3rem;
+    }
+    
+    /* Lista de transacciones */
+    .transactions-card {
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+      padding: 0;
+      margin-bottom: 30px;
+      overflow: hidden;
+    }
+    
+    .transactions-header {
+      background: linear-gradient(135deg, var(--primary-blue), var(--light-blue));
+      color: white;
+      padding: 25px;
+      text-align: center;
+    }
+    
+    .transactions-title {
+      font-weight: 700;
+      margin-bottom: 5px;
+      font-size: 1.5rem;
+    }
+    
+    .transactions-subtitle {
+      opacity: 0.9;
+      font-size: 0.95rem;
+    }
+    
+    .transactions-list {
+      max-height: 500px;
+      overflow-y: auto;
+      padding: 20px;
+    }
+    
+    .transaction-item {
+      background: #f9f9f9;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 15px;
+      border-left: 5px solid transparent;
+      transition: all 0.3s;
+      animation: slideIn 0.5s ease;
+    }
+    
+    .transaction-item:hover {
+      background: #f0f0f0;
+      transform: translateX(5px);
+    }
+    
+    .transaction-deposit {
+      border-left-color: var(--success-green);
+    }
+    
+    .transaction-send {
+      border-left-color: var(--danger-red);
+    }
+    
+    .transaction-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    
+    .transaction-type {
+      display: flex;
+      align-items: center;
+    }
+    
+    .transaction-icon {
+      font-size: 1.2rem;
+      margin-right: 10px;
+    }
+    
+    .transaction-title {
+      color: #333;
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+    
+    .transaction-amount {
+      font-weight: 700;
+      font-size: 1.3rem;
+    }
+    
+    .transaction-deposit .transaction-amount {
+      color: var(--success-green);
+    }
+    
+    .transaction-send .transaction-amount {
+      color: var(--danger-red);
+    }
+    
+    .transaction-details {
+      margin-bottom: 10px;
+    }
+    
+    .transaction-contact {
+      color: #666;
+      font-weight: 500;
+      margin-bottom: 5px;
+    }
+    
+    .transaction-description {
+      color: #666;
+      font-size: 0.95rem;
+      line-height: 1.4;
+    }
+    
+    .transaction-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 1px solid #eee;
+    }
+    
+    .transaction-date {
+      color: #888;
+      font-size: 0.85rem;
+    }
+    
+    .transaction-id {
+      color: #aaa;
+      font-family: monospace;
+      font-size: 0.8rem;
+    }
+    
+    .no-transactions {
+      text-align: center;
+      padding: 50px 20px;
+      color: #666;
+    }
+    
+    .no-transactions-icon {
+      font-size: 3rem;
+      margin-bottom: 15px;
+      opacity: 0.5;
+    }
+    
+    .no-transactions-title {
+      font-weight: 600;
+      margin-bottom: 10px;
+      font-size: 1.2rem;
+    }
+    
+    .no-transactions-text {
+      color: #888;
+      margin-bottom: 20px;
+      max-width: 400px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    
+    /* Botones de acción */
+    .action-buttons {
+      display: flex;
+      gap: 15px;
+      margin-top: 30px;
+      flex-wrap: wrap;
+    }
+    
+    .btn-action {
+      flex: 1;
+      min-width: 200px;
+      border-radius: 12px;
+      padding: 15px 25px;
+      font-weight: 600;
+      font-size: 1.1rem;
+      transition: all 0.3s;
+      text-align: center;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .btn-back {
+      background: #6c757d;
+      color: white;
+      border: none;
+    }
+    
+    .btn-back:hover {
+      background: #5a6268;
+      color: white;
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(108, 117, 125, 0.2);
+      text-decoration: none;
+    }
+    
+    .btn-clear {
+      background: var(--danger-red);
+      color: white;
+      border: none;
+    }
+    
+    .btn-clear:hover {
+      background: #bd2130;
+      color: white;
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(220, 53, 69, 0.2);
+      text-decoration: none;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(-20px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+    
+    /* Scrollbar personalizado */
+    .transactions-list::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    .transactions-list::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 4px;
+    }
+    
+    .transactions-list::-webkit-scrollbar-thumb {
+      background: var(--primary-blue);
+      border-radius: 4px;
+    }
+    
+    .transactions-list::-webkit-scrollbar-thumb:hover {
+      background: var(--dark-blue);
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .main-container {
+        padding: 0 15px;
+        margin: 20px auto;
+      }
+      
+      .page-title {
+        font-size: 1.8rem;
+      }
+      
+      .filters-card {
+        padding: 20px;
+      }
+      
+      .filter-buttons {
+        justify-content: center;
+      }
+      
+      .stats-container {
+        grid-template-columns: 1fr;
+      }
+      
+      .transaction-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+      .transaction-amount {
+        margin-top: 10px;
+      }
+      
+      .action-buttons {
+        flex-direction: column;
+      }
+      
+      .btn-action {
+        min-width: 100%;
+      }
+      
+      .transactions-header {
+        padding: 20px 15px;
+      }
+      
+      .transactions-list {
+        padding: 15px;
+        max-height: 400px;
+      }
+    }
+    
+    @media (max-width: 576px) {
+      .navbar-brand {
+        font-size: 1.3rem;
+      }
+      
+      .page-title {
+        font-size: 1.6rem;
+      }
+      
+      .transaction-item {
+        padding: 15px;
+      }
+      
+      .transaction-footer {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+      .transaction-id {
+        margin-top: 10px;
+      }
+    }
+    
+    @media (min-width: 769px) and (max-width: 992px) {
+      .main-container {
+        max-width: 95%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Barra de navegación -->
+  <nav class="navbar navbar-expand-lg navbar-bancojava">
+    <div class="container">
+      <a class="navbar-brand" href="menu.html">🏦 Banco Java</a>
+      <a href="menu.html" class="nav-back">
+        ← Volver al menú
+      </a>
+    </div>
+  </nav>
+  
+  <!-- Contenido principal -->
+  <div class="container main-container">
+    <!-- Encabezado de página -->
+    <div class="page-header">
+      <h1 class="page-title">Últimos movimientos</h1>
+      <p class="page-subtitle">Revisa el historial completo de tus transacciones y depósitos</p>
+    </div>
+    
+    <!-- Filtros y estadísticas -->
+    <div class="filters-card">
+      <div class="filter-title">Filtrar por tipo</div>
+      <div class="filter-buttons">
+        <div class="filter-btn active" data-filter="all">Todas</div>
+        <div class="filter-btn" data-filter="deposit">Depósitos</div>
+        <div class="filter-btn" data-filter="send">Transferencias</div>
+      </div>
+      
+      <div class="stats-container">
+        <div class="stat-card deposits">
+          <div class="stat-label">Total depositado</div>
+          <div class="stat-value">$<span id="totalDeposits">0.00</span></div>
+        </div>
+        
+        <div class="stat-card transfers">
+          <div class="stat-label">Total transferido</div>
+          <div class="stat-value">$<span id="totalTransfers">0.00</span></div>
+        </div>
+        
+        <div class="stat-card total">
+          <div class="stat-label">Total transacciones</div>
+          <div class="stat-value" id="totalTransactions">0</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Lista de transacciones -->
+    <div class="transactions-card">
+      <div class="transactions-header">
+        <div class="transactions-title">Historial de transacciones</div>
+        <div class="transactions-subtitle">
+          <span id="transactionCount">0</span> transacciones encontradas
+        </div>
+      </div>
+      
+      <div class="transactions-list" id="transactionsList">
+        <!-- Las transacciones se cargarán aquí dinámicamente -->
+      </div>
+      
+      <div id="noTransactions" class="no-transactions" style="display: none;">
+        <div class="no-transactions-icon">📭</div>
+        <div class="no-transactions-title">No hay transacciones</div>
+        <div class="no-transactions-text">
+          Aún no has realizado ninguna transacción. 
+          Puedes comenzar haciendo un depósito o enviando dinero.
+        </div>
+      </div>
+    </div>
+    
+    <!-- Botones de acción -->
+    <div class="action-buttons">
+      <a href="deposit.html" class="btn btn-action btn-primary" style="background: var(--info-cyan);">
+        💰 Realizar depósito
+      </a>
+      <a href="sendmoney.html" class="btn btn-action btn-primary" style="background: var(--warning-yellow); color: #212529;">
+        📤 Enviar dinero
+      </a>
+      <a href="menu.html" class="btn btn-action btn-back">
+        ↩️ Volver al menú
+      </a>
+      <button id="btnClearHistory" class="btn btn-action btn-clear">
+        🗑️ Limpiar historial
+      </button>
+    </div>
+  </div>
+
+  <!-- jQuery y Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <script>
+    $(document).ready(function() {
+      // Referencias a elementos
+      const $transactionsList = $('#transactionsList');
+      const $noTransactions = $('#noTransactions');
+      const $totalDeposits = $('#totalDeposits');
+      const $totalTransfers = $('#totalTransfers');
+      const $totalTransactions = $('#totalTransactions');
+      const $transactionCount = $('#transactionCount');
+      const $filterButtons = $('.filter-btn');
+      const $btnClearHistory = $('#btnClearHistory');
+      
+      // Estado
+      let transactions = [];
+      let currentFilter = 'all';
+      
+      // Claves de localStorage
+      const TRANSACTIONS_KEY = 'walletTransactions';
+      const BALANCE_KEY = 'walletBalance';
+      
+      // Formatear número como moneda
+      function formatCurrency(amount) {
+        return parseFloat(amount).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+      }
+      
+      // Formatear fecha
+      function formatDate(dateString) {
+        const date = new Date(dateString);
+        const now = new Date();
+        const diffTime = Math.abs(now - date);
+        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+        
+        // Si es hoy, mostrar la hora
+        if (diffDays === 0) {
+          return `Hoy a las ${date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}`;
+        }
+        // Si es ayer
+        else if (diffDays === 1) {
+          return `Ayer a las ${date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}`;
+        }
+        // Si es esta semana
+        else if (diffDays < 7) {
+          const days = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+          return `${days[date.getDay()]} a las ${date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}`;
+        }
+        // Para fechas más antiguas
+        else {
+          return date.toLocaleDateString('es-ES', {
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+          });
+        }
+      }
+      
+      // Obtener transacciones
+      function getTransactions() {
+        const savedTransactions = localStorage.getItem(TRANSACTIONS_KEY);
+        return savedTransactions ? JSON.parse(savedTransactions) : [];
+      }
+      
+      // Calcular estadísticas
+      function calculateStatistics(transactionsArray) {
+        let totalDeposits = 0;
+        let totalTransfers = 0;
+        
+        transactionsArray.forEach(transaction => {
+          if (transaction.type === 'deposit') {
+            totalDeposits += parseFloat(transaction.amount);
+          } else if (transaction.type === 'send') {
+            totalTransfers += parseFloat(transaction.amount);
+          }
+        });
+        
+        return {
+          totalDeposits: totalDeposits,
+          totalTransfers: totalTransfers,
+          totalTransactions: transactionsArray.length
+        };
+      }
+      
+      // Actualizar estadísticas
+      function updateStatistics() {
+        const stats = calculateStatistics(transactions);
+        
+        $totalDeposits.text(formatCurrency(stats.totalDeposits));
+        $totalTransfers.text(formatCurrency(stats.totalTransfers));
+        $totalTransactions.text(stats.totalTransactions);
+      }
+      
+      // Filtrar transacciones
+      function filterTransactions() {
+        let filteredTransactions = transactions;
+        
+        if (currentFilter === 'deposit') {
+          filteredTransactions = transactions.filter(t => t.type === 'deposit');
+        } else if (currentFilter === 'send') {
+          filteredTransactions = transactions.filter(t => t.type === 'send');
+        }
+        
+        // Ordenar por fecha (más reciente primero)
+        filteredTransactions.sort((a, b) => new Date(b.date) - new Date(a.date));
+        
+        return filteredTransactions;
+      }
+      
+      // Renderizar transacciones
+      function renderTransactions() {
+        const filteredTransactions = filterTransactions();
+        
+        // Actualizar contador
+        $transactionCount.text(filteredTransactions.length);
+        
+        // Mostrar mensaje si no hay transacciones
+        if (filteredTransactions.length === 0) {
+          $noTransactions.show();
+          $transactionsList.empty();
+          return;
+        }
+        
+        $noTransactions.hide();
+        $transactionsList.empty();
+        
+        // Crear elementos para cada transacción
+        filteredTransactions.forEach((transaction, index) => {
+          const transactionClass = transaction.type === 'deposit' ? 'transaction-item transaction-deposit' : 'transaction-item transaction-send';
+          const transactionIcon = transaction.type === 'deposit' ? '💰' : '📤';
+          const transactionTitle = transaction.type === 'deposit' ? 'Depósito' : 'Transferencia';
+          const transactionSign = transaction.type === 'deposit' ? '+' : '-';
+          
+          const $transactionItem = $(`
+            <div class="${transactionClass}" style="animation: slideIn 0.5s ease ${index * 0.1}s both">
+              <div class="transaction-header">
+                <div class="transaction-type">
+                  <div class="transaction-icon">${transactionIcon}</div>
+                  <div class="transaction-title">${transactionTitle}</div>
+                </div>
+                <div class="transaction-amount">${transactionSign}$${formatCurrency(transaction.amount)}</div>
+              </div>
+              
+              <div class="transaction-details">
+                ${transaction.type === 'send' ? 
+                  `<div class="transaction-contact">Para: ${transaction.contactName || 'Contacto'}</div>` : 
+                  ''}
+                ${transaction.description ? 
+                  `<div class="transaction-description">${transaction.description}</div>` : 
+                  ''}
+              </div>
+              
+              <div class="transaction-footer">
+                <div class="transaction-date">${formatDate(transaction.date)}</div>
+                <div class="transaction-id">ID: ${transaction.id || 'N/A'}</div>
+              </div>
+            </div>
+          `);
+          
+          $transactionsList.append($transactionItem);
+        });
+      }
+      
+      // Limpiar historial
+      function clearHistory() {
+        if (confirm('¿Estás seguro de que quieres eliminar todo el historial de transacciones? Esta acción no se puede deshacer.')) {
+          localStorage.removeItem(TRANSACTIONS_KEY);
+          transactions = [];
+          updateStatistics();
+          renderTransactions();
+          
+          // Mostrar mensaje de éxito
+          alert('Historial de transacciones eliminado correctamente.');
+        }
+      }
+      
+      // Inicializar eventos
+      function initEvents() {
+        // Filtros
+        $filterButtons.on('click', function() {
+          // Remover clase active de todos los botones
+          $filterButtons.removeClass('active');
+          
+          // Agregar clase active al botón clickeado
+          $(this).addClass('active');
+          
+          // Actualizar filtro actual
+          currentFilter = $(this).data('filter');
+          
+          // Renderizar transacciones con el nuevo filtro
+          renderTransactions();
+        });
+        
+        // Limpiar historial
+        $btnClearHistory.on('click', function() {
+          clearHistory();
+        });
+        
+        // Actualizar al enfocar la ventana
+        $(window).on('focus', function() {
+          loadTransactions();
+        });
+      }
+      
+      // Cargar transacciones
+      function loadTransactions() {
+        transactions = getTransactions();
+        updateStatistics();
+        renderTransactions();
+      }
+      
+      // Inicializar la página
+      function initPage() {
+        // Cargar transacciones
+        loadTransactions();
+        
+        // Inicializar eventos
+        initEvents();
+        
+        // Efecto de animación al cargar
+        setTimeout(() => {
+          $('.main-container').css({
+            'opacity': '1',
+            'transform': 'translateY(0)'
+          });
+        }, 100);
+      }
+      
+      // Iniciar
+      initPage();
+    });
+  </script>
+</body>
+</html>

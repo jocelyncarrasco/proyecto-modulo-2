@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Banco Java - Depositar</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+  <style>
+    :root {
+      --primary-blue: #0a25f1;
+      --light-blue: #3a4cf3;
+      --dark-blue: #081fc7;
+      --success-green: #28a745;
+      --warning-yellow: #ffc107;
+      --danger-red: #dc3545;
+      --info-cyan: #17a2b8;
+    }
+    
+    body {
+      background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+      min-height: 100vh;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    .navbar-bancojava {
+      background: var(--primary-blue);
+      box-shadow: 0 4px 12px rgba(10, 37, 241, 0.15);
+      padding: 12px 0;
+    }
+    
+    .navbar-brand {
+      color: white !important;
+      font-weight: 700;
+      font-size: 1.5rem;
+      letter-spacing: 0.5px;
+    }
+    
+    .nav-back {
+      color: rgba(255, 255, 255, 0.9);
+      font-weight: 500;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      transition: all 0.3s;
+    }
+    
+    .nav-back:hover {
+      color: white;
+      text-decoration: none;
+    }
+    
+    .main-container {
+      max-width: 600px;
+      margin: 40px auto;
+      animation: fadeIn 0.8s ease;
+    }
+    
+    .page-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    
+    .page-title {
+      color: #333;
+      font-weight: 700;
+      margin-bottom: 10px;
+      font-size: 2.2rem;
+    }
+    
+    .page-subtitle {
+      color: #666;
+      font-size: 1.1rem;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+    
+    .deposit-card {
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      padding: 30px;
+      margin-bottom: 30px;
+      border-top: 5px solid var(--info-cyan);
+    }
+    
+    .balance-card {
+      background: linear-gradient(135deg, var(--primary-blue), var(--light-blue));
+      border-radius: 12px;
+      padding: 25px;
+      margin-bottom: 30px;
+      color: white;
+      box-shadow: 0 5px 15px rgba(10, 37, 241, 0.2);
+    }
+    
+    .balance-label {
+      font-size: 1rem;
+      opacity: 0.9;
+      margin-bottom: 10px;
+      font-weight: 500;
+    }
+    
+    .balance-amount {
+      font-size: 2.5rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+    
+    .amount-input-container {
+      margin-bottom: 30px;
+    }
+    
+    .amount-label {
+      color: #333;
+      font-weight: 600;
+      margin-bottom: 15px;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+    }
+    
+    .amount-input-group {
+      position: relative;
+    }
+    
+    .amount-input {
+      border-radius: 12px;
+      border: 2px solid #e0e0e0;
+      padding: 18px 20px;
+      font-size: 1.5rem;
+      font-weight: 600;
+      transition: all 0.3s;
+      text-align: center;
+      height: auto;
+    }
+    
+    .amount-input:focus {
+      border-color: var(--primary-blue);
+      box-shadow: 0 0 0 0.2rem rgba(10, 37, 241, 0.15);
+    }
+    
+    .currency-symbol {
+      position: absolute;
+      left: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #666;
+      z-index: 5;
+    }
+    
+    .quick-amounts-section {
+      margin-bottom: 30px;
+    }
+    
+    .section-title {
+      color: #333;
+      font-weight: 600;
+      margin-bottom: 15px;
+      font-size: 1.1rem;
+    }
+    
+    .quick-amounts {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+    }
+    
+    .quick-amount-btn {
+      background: white;
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      padding: 15px;
+      font-weight: 600;
+      color: #333;
+      transition: all 0.3s;
+      cursor: pointer;
+      text-align: center;
+      font-size: 1.1rem;
+    }
+    
+    .quick-amount-btn:hover {
+      border-color: var(--primary-blue);
+      background: rgba(10, 37, 241, 0.05);
+      transform: translateY(-2px);
+    }
+    
+    .quick-amount-btn.active {
+      background: var(--primary-blue);
+      color: white;
+      border-color: var(--primary-blue);
+    }
+    
+    .custom-amount-section {
+      margin-top: 25px;
+    }
+    
+    .custom-amount-label {
+      color: #666;
+      font-weight: 500;
+      margin-bottom: 10px;
+      font-size: 0.95rem;
+    }
+    
+    .custom-amount-input {
+      border-radius: 10px;
+      border: 2px solid #e0e0e0;
+      padding: 12px 15px;
+      font-size: 1rem;
+      transition: all 0.3s;
+    }
+    
+    .custom-amount-input:focus {
+      border-color: var(--primary-blue);
+      box-shadow: 0 0 0 0.2rem rgba(10, 37, 241, 0.1);
+    }
+    
+    .btn-deposit {
+      background: var(--primary-blue);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 18px;
+      font-weight: 700;
+      font-size: 1.2rem;
+      transition: all 0.3s;
+      width: 100%;
+      margin-top: 20px;
+      box-shadow: 0 5px 15px rgba(10, 37, 241, 0.2);
+    }
+    
+    .btn-deposit:hover {
+      background: var(--dark-blue);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(10, 37, 241, 0.25);
+    }
+    
+    .btn-deposit:active {
+      transform: translateY(-1px);
+    }
+    
+    .btn-deposit:disabled {
+      opacity: 0.7;
+      transform: none;
+      box-shadow: none;
+    }
+    
+    .deposit-success {
+      background: linear-gradient(135deg, var(--success-green), #20c997);
+      border-radius: 12px;
+      padding: 25px;
+      color: white;
+      text-align: center;
+      margin-top: 25px;
+      animation: fadeIn 0.5s ease;
+      display: none;
+    }
+    
+    .success-icon {
+      font-size: 3rem;
+      margin-bottom: 15px;
+      display: block;
+    }
+    
+    .success-title {
+      font-weight: 700;
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+    }
+    
+    .success-amount {
+      font-size: 2rem;
+      font-weight: 700;
+      margin: 15px 0;
+    }
+    
+    .redirect-message {
+      opacity: 0.9;
+      font-size: 0.95rem;
+      margin-top: 15px;
+    }
+    
+    .spinner-border-sm {
+      width: 1rem;
+      height: 1rem;
+      margin-right: 8px;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+    
+    .pulse {
+      animation: pulse 0.5s;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .main-container {
+        padding: 0 15px;
+        margin: 20px auto;
+      }
+      
+      .page-title {
+        font-size: 1.8rem;
+      }
+      
+      .deposit-card {
+        padding: 20px;
+      }
+      
+      .balance-amount {
+        font-size: 2rem;
+      }
+      
+      .amount-input {
+        font-size: 1.3rem;
+        padding: 15px;
+      }
+      
+      .currency-symbol {
+        left: 15px;
+        font-size: 1.3rem;
+      }
+      
+      .quick-amounts {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .quick-amount-btn {
+        padding: 12px;
+        font-size: 1rem;
+      }
+      
+      .btn-deposit {
+        padding: 15px;
+        font-size: 1.1rem;
+      }
+      
+      .success-amount {
+        font-size: 1.8rem;
+      }
+    }
+    
+    @media (max-width: 576px) {
+      .navbar-brand {
+        font-size: 1.3rem;
+      }
+      
+      .quick-amounts {
+        grid-template-columns: 1fr;
+      }
+      
+      .page-title {
+        font-size: 1.6rem;
+      }
+      
+      .balance-amount {
+        font-size: 1.8rem;
+      }
+    }
+    
+    @media (min-width: 769px) and (max-width: 992px) {
+      .main-container {
+        max-width: 700px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Barra de navegación -->
+  <nav class="navbar navbar-expand-lg navbar-bancojava">
+    <div class="container">
+      <a class="navbar-brand" href="menu.html">🏦 Banco Java</a>
+      <a href="menu.html" class="nav-back">
+        ← Volver al menú
+      </a>
+    </div>
+  </nav>
+  
+  <!-- Contenido principal -->
+  <div class="container main-container">
+    <!-- Encabezado de página -->
+    <div class="page-header">
+      <h1 class="page-title">Depositar dinero</h1>
+      <p class="page-subtitle">Agrega fondos a tu cuenta de manera segura y rápida</p>
+    </div>
+    
+    <!-- Tarjeta de depósito -->
+    <div class="deposit-card">
+      <!-- Saldo actual -->
+      <div class="balance-card">
+        <div class="balance-label">Saldo disponible</div>
+        <div class="balance-amount">$<span id="currentBalance">0.00</span></div>
+      </div>
+      
+      <!-- Formulario de depósito -->
+      <form id="depositForm">
+        <!-- Monto a depositar -->
+        <div class="amount-input-container">
+          <label class="amount-label">💰 Monto a depositar</label>
+          <div class="amount-input-group">
+            <span class="currency-symbol">$</span>
+            <input type="number" 
+                   class="form-control amount-input" 
+                   id="depositAmount" 
+                   min="1" 
+                   step="0.01" 
+                   placeholder="0.00" 
+                   required>
+          </div>
+        </div>
+        
+        <!-- Montos rápidos -->
+        <div class="quick-amounts-section">
+          <div class="section-title">💡 Montos sugeridos</div>
+          <div class="quick-amounts">
+            <div class="quick-amount-btn" data-amount="500">
+              $500
+            </div>
+            <div class="quick-amount-btn" data-amount="1000">
+              $1,000
+            </div>
+            <div class="quick-amount-btn" data-amount="5000">
+              $5,000
+            </div>
+            <div class="quick-amount-btn" data-amount="10000">
+              $10,000
+            </div>
+          </div>
+        </div>
+        
+        <!-- Monto personalizado -->
+        <div class="custom-amount-section">
+          <label class="custom-amount-label">O ingresa un monto personalizado</label>
+          <input type="number" 
+                 class="form-control custom-amount-input" 
+                 id="customAmount" 
+                 min="1" 
+                 step="0.01" 
+                 placeholder="Ej: 2500.50">
+        </div>
+        
+        <!-- Botón de depósito -->
+        <button type="submit" class="btn btn-deposit" id="submitBtn">
+          Realizar depósito
+        </button>
+      </form>
+      
+      <!-- Mensaje de éxito -->
+      <div id="depositSuccess" class="deposit-success">
+        <div class="success-icon">✅</div>
+        <div class="success-title">¡Depósito exitoso!</div>
+        <div>Se han agregado <span class="success-amount" id="depositedAmount">$0.00</span> a tu cuenta</div>
+        <div class="redirect-message">Redirigiendo al menú principal...</div>
+      </div>
+      
+      <!-- Alertas -->
+      <div id="alertContainer" class="mt-3"></div>
+    </div>
+  </div>
+
+  <!-- jQuery y Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <script>
+    $(document).ready(function() {
+      // Referencias a elementos
+      const $currentBalance = $('#currentBalance');
+      const $depositAmount = $('#depositAmount');
+      const $customAmount = $('#customAmount');
+      const $depositForm = $('#depositForm');
+      const $submitBtn = $('#submitBtn');
+      const $depositSuccess = $('#depositSuccess');
+      const $depositedAmount = $('#depositedAmount');
+      const $alertContainer = $('#alertContainer');
+      const $quickAmountBtns = $('.quick-amount-btn');
+      
+      // Formatear número como moneda
+      function formatCurrency(amount) {
+        return parseFloat(amount).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+      }
+      
+      // Obtener saldo actual del localStorage (usando la misma clave que el menú principal)
+      function getCurrentBalance() {
+        const savedBalance = localStorage.getItem('walletBalance');
+        
+        if (savedBalance === null || savedBalance === undefined) {
+          localStorage.setItem('walletBalance', '100000.00');
+          return 100000.00;
+        }
+        
+        const balance = parseFloat(savedBalance);
+        
+        if (isNaN(balance)) {
+          localStorage.setItem('walletBalance', '100000.00');
+          return 100000.00;
+        }
+        
+        return balance;
+      }
+      
+      // Actualizar visualización del saldo
+      function updateBalanceDisplay() {
+        const balance = getCurrentBalance();
+        $currentBalance.text(formatCurrency(balance));
+      }
+      
+      // Guardar transacción
+      function saveTransaction(amount) {
+        // Obtener transacciones existentes
+        const transactions = JSON.parse(localStorage.getItem('walletTransactions') || '[]');
+        
+        // Crear nueva transacción
+        const newTransaction = {
+          id: Date.now(),
+          type: 'deposit',
+          amount: parseFloat(amount),
+          date: new Date().toISOString(),
+          description: 'Depósito en cuenta'
+        };
+        
+        // Agregar nueva transacción
+        transactions.push(newTransaction);
+        
+        // Guardar en localStorage
+        localStorage.setItem('walletTransactions', JSON.stringify(transactions));
+        
+        return newTransaction;
+      }
+      
+      // Actualizar saldo después del depósito
+      function updateBalance(amount) {
+        const currentBalance = getCurrentBalance();
+        const newBalance = currentBalance + parseFloat(amount);
+        
+        // Guardar nuevo saldo
+        localStorage.setItem('walletBalance', newBalance.toFixed(2));
+        
+        // Actualizar visualización
+        updateBalanceDisplay();
+        
+        return newBalance;
+      }
+      
+      // Mostrar alerta
+      function showAlert(message, type) {
+        // Eliminar alertas anteriores
+        $alertContainer.empty();
+        
+        // Crear nueva alerta
+        const alertClass = type === 'success' ? 'alert-success' : 
+                          type === 'warning' ? 'alert-warning' : 
+                          type === 'danger' ? 'alert-danger' : 'alert-info';
+        
+        const $alert = $(`
+          <div class="alert ${alertClass} alert-dismissible fade show" role="alert">
+            ${message}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+        `);
+        
+        // Agregar a contenedor
+        $alertContainer.append($alert);
+        
+        // Auto-ocultar después de 5 segundos (excepto para éxito)
+        if (type !== 'success') {
+          setTimeout(() => {
+            $alert.alert('close');
+          }, 5000);
+        }
+      }
+      
+      // Validar monto
+      function validateAmount(amount) {
+        if (!amount || amount === '' || amount <= 0) {
+          return {
+            isValid: false,
+            message: 'Por favor, ingresa un monto válido mayor a cero.'
+          };
+        }
+        
+        if (amount > 1000000) {
+          return {
+            isValid: false,
+            message: 'El monto máximo por depósito es de $1,000,000.'
+          };
+        }
+        
+        return {
+          isValid: true
+        };
+      }
+      
+      // Manejar montos rápidos
+      $quickAmountBtns.on('click', function() {
+        // Remover clase active de todos los botones
+        $quickAmountBtns.removeClass('active');
+        
+        // Agregar clase active al botón clickeado
+        $(this).addClass('active');
+        
+        // Obtener monto
+        const amount = $(this).data('amount');
+        
+        // Establecer en campo de monto
+        $depositAmount.val(amount);
+        
+        // Limpiar campo personalizado
+        $customAmount.val('');
+        
+        // Efecto visual
+        $(this).addClass('pulse');
+        setTimeout(() => {
+          $(this).removeClass('pulse');
+        }, 500);
+      });
+      
+      // Manejar campo personalizado
+      $customAmount.on('input', function() {
+        const amount = $(this).val();
+        
+        if (amount) {
+          // Remover selección de montos rápidos
+          $quickAmountBtns.removeClass('active');
+          
+          // Establecer en campo principal
+          $depositAmount.val(amount);
+        }
+      });
+      
+      // Sincronizar campos de monto
+      $depositAmount.on('input', function() {
+        const amount = $(this).val();
+        
+        // Remover selección de montos rápidos
+        $quickAmountBtns.removeClass('active');
+        
+        // Actualizar campo personalizado si es diferente de los montos rápidos
+        const quickAmounts = [500, 1000, 5000, 10000];
+        if (!quickAmounts.includes(parseFloat(amount) || 0)) {
+          $customAmount.val(amount);
+        } else {
+          $customAmount.val('');
+        }
+      });
+      
+      // Formatear monto mientras se escribe
+      $depositAmount.on('blur', function() {
+        const value = $(this).val();
+        if (value) {
+          $(this).val(parseFloat(value).toFixed(2));
+        }
+      });
+      
+      // Manejar envío del formulario
+      $depositForm.on('submit', function(event) {
+        event.preventDefault();
+        
+        // Ocultar mensaje de éxito si está visible
+        $depositSuccess.hide();
+        
+        // Obtener y validar monto
+        const amount = $depositAmount.val().trim();
+        const validation = validateAmount(amount);
+        
+        if (!validation.isValid) {
+          showAlert(validation.message, 'warning');
+          return;
+        }
+        
+        // Deshabilitar botón y mostrar indicador de carga
+        $submitBtn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Procesando...');
+        
+        // Simular procesamiento (1.5 segundos)
+        setTimeout(() => {
+          // Actualizar saldo
+          const newBalance = updateBalance(amount);
+          
+          // Guardar transacción
+          saveTransaction(amount);
+          
+          // Mostrar mensaje de éxito
+          $depositedAmount.text('$' + formatCurrency(amount));
+          $depositSuccess.show();
+          
+          // Mostrar alerta de éxito
+          showAlert(`Depósito de $${formatCurrency(amount)} procesado exitosamente.`, 'success');
+          
+          // Habilitar botón nuevamente
+          $submitBtn.prop('disabled', false).text('Realizar depósito');
+          
+          // Redirigir después de 3 segundos
+          setTimeout(() => {
+            window.location.href = 'menu.html';
+          }, 3000);
+        }, 1500);
+      });
+      
+      // Inicializar la página
+      function initPage() {
+        // Actualizar saldo
+        updateBalanceDisplay();
+        
+        // Establecer valores mínimos y máximos
+        $depositAmount.attr('max', '1000000');
+        $customAmount.attr('max', '1000000');
+        
+        // Efecto de animación al cargar
+        setTimeout(() => {
+          $('.main-container').css({
+            'opacity': '1',
+            'transform': 'translateY(0)'
+          });
+        }, 100);
+      }
+      
+      // Iniciar
+      initPage();
+    });
+  </script>
+</body>
+</html>
